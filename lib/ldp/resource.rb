@@ -84,7 +84,7 @@ module Ldp
     def update new_content = nil
       new_content ||= content
       resp = client.put subject, new_content do |req|
-        req.headers['If-Match'] = get.etag if retrieved_content?
+        req.headers['If-Match'] = head.headers['ETag'] # if retrieved_content?
         yield req if block_given?
       end
       update_cached_get(resp) if retrieved_content?
@@ -108,8 +108,8 @@ module Ldp
       if response.etag.nil? || response.last_modified.nil?
         response = Response.wrap(client, client.head(subject))
       end
-      @get.etag = response.etag
-      @get.last_modified = response.last_modified
+      @get.headers['ETag'] = response.headers['ETag']
+      @get.headers['Last-Modified'] = response.headers['Last-Modified']
     end
 
   end

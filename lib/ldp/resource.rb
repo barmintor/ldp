@@ -70,11 +70,9 @@ module Ldp
       raise "Can't call create on an existing resource" unless new?
       verb = subject.nil? ? :post : :put
       resp = client.send(verb, (subject || @base_path), content) do |req|
-
-        yield req if block_given?
+        yield req
       end
-
-      @subject = resp.headers['Location']
+      @subject = resp.headers['Location'] if verb == :post
       @subject_uri = nil
       reload
     end

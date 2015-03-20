@@ -20,6 +20,7 @@ module Ldp
     def create
       super do |req|
         req.headers["Content-Type"] = "text/turtle"
+        yield req
       end
     end
 

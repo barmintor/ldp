@@ -15,8 +15,9 @@ module Ldp
     # Extract the Link: headers from the HTTP resource
     def self.links response
       h = {}
-      Array(response.headers['Link'.freeze]).map { |x| x.split(', '.freeze) }.flatten.inject(h) do |memo, header|
-        m = header.match(/<(?<link>.*)>;\s?rel="(?<rel>[^"]+)"/)
+      return h if response.nil? || None === response
+      Array(response.headers['Link'.freeze]).map { |x| x.split(','.freeze) }.flatten.inject(h) do |memo, header|
+        m = header.match(/\s?<(?<link>.*)>;\s?rel="?(?<rel>[^"]+)"?/)
         if m
           memo[m[:rel]] ||= []
           memo[m[:rel]] << m[:link]

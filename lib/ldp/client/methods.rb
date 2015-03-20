@@ -29,7 +29,6 @@ module Ldp::Client::Methods
     logger.debug "LDP: GET [#{url}]"
     resp = http.get do |req|
       req.url munge_to_relative_url(url)
-
       if options[:minimal]
         req.headers["Prefer"] = "return=minimal"
       else
@@ -138,6 +137,7 @@ module Ldp::Client::Methods
   # with an alternative scheme. If the scheme isn't HTTP(S), assume
   # they meant a relative URI instead.
   def munge_to_relative_url url
+    return '' if url.blank? # if POSTing to a container
     purl = URI.parse(url)
     if purl.absolute? and !((purl.scheme rescue nil) =~ /^http/)
       "./" + url
